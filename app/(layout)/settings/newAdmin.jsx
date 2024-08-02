@@ -164,6 +164,52 @@ const NewAdmin = ({
           />
           Report A Bug
         </label>
+        Studio
+                  <label className="block mb-2 pt-2 w-fit ">
+                    <input
+                      type="checkbox"
+                      value="Option 1"
+                      checked={permission["studioBlogs"]}
+                      className="mr-2"
+                      onChange={() => {
+                        setPermission((prev) => ({
+                          ...prev, // Spread operator to preserve existing properties
+                          studioBlogs: !prev.studioBlogs,
+                        }));
+                      }}
+                    />
+                    Blogs
+                  </label>
+                  <label className="block mb-2 w-fit ">
+                    <input
+                      type="checkbox"
+                      value="Option 1"
+                      checked={permission["studioContactUs"]}
+                      className="mr-2"
+                      onChange={() => {
+                        setPermission((prev) => ({
+                          ...prev, // Spread operator to preserve existing properties
+                          studioContactUs: !prev.studioContactUs,
+                        }));
+                      }}
+                    />
+                    Contact Us
+                  </label>
+                  <label className="block mb-2 w-fit ">
+                    <input
+                      type="checkbox"
+                      value="Option 1"
+                      checked={permission["studioWorks"]}
+                      className="mr-2"
+                      onChange={() => {
+                        setPermission((prev) => ({
+                          ...prev, // Spread operator to preserve existing properties
+                          studioWorks: !prev.studioWorks,
+                        }));
+                      }}
+                    />
+                    Works
+                  </label>
         <div className=" w-full flex justify-end gap-4">
           <button
             className="pl-4 pr-4 pt-2 pb-2 border border-dark rounded-lg"

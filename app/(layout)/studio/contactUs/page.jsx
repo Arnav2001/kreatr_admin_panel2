@@ -1,10 +1,8 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import Studio from "../page";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 import { DeleteConfirmation } from "../../../components/deleteButton";
 
@@ -36,12 +34,17 @@ const ContactUs = () => {
 
   return (
     <Studio>
-      {loading === false? contacts.length !== 0? <div className="w-full h-full flex flex-col justify-between p-4 ">
-        <div className=" grid grid-cols-2 gap-4 mb-4 overflow-auto">
-          {contacts.map((val, index) => (
-            <div key={index} className="border border-dark w-full p-2 h-full">
-              <div className="h-[3.5vw] flex justify-end">
-              <div
+      {loading === false ? (
+        contacts.length !== 0 ? (
+          <div className="w-full h-full flex flex-col justify-between p-4 ">
+            <div className=" grid grid-cols-2 gap-4 mb-4 overflow-auto">
+              {contacts.map((val, index) => (
+                <div
+                  key={index}
+                  className="border border-dark w-full p-2 h-full rounded-lg"
+                >
+                  <div className="h-[3.5vw] flex justify-end">
+                    <div
                       className="w-[3.5vw] h-full flex items-center justify-center cursor-pointer bg-white bg-opacity-[50%] p-2 rounded-[50%] "
                       onClick={() => {
                         setApi(
@@ -55,28 +58,32 @@ const ContactUs = () => {
                         className="h-full w-full text-gray-500"
                       />
                     </div>
-              </div>
-              <h1>
-              {val.name}
-              </h1>
-              <h2>
-              {val.senderEmail}
-              </h2>
-              <p>
-              {val.phoneNumber}
-              </p>
+                  </div>
+                  <h1 className="font-bold p-1">{val.name}</h1>
+                  <h2 className="p-1 flex gap-2 items-center"><img src="/assets/mail.png" alt="mailimg" className="w-[5%] h-[5%]" />{val.senderEmail}</h2>
+                  <p className="p-1 flex gap-2 items-center"><img src="/assets/phone.png" alt="phonenumber" className="w-[5%] h-[5%]" />{val.phoneNumber}</p>
+                </div>
+              ))}
             </div>
-          ))}
+            {isDeleting === true && (
+              <DeleteConfirmation
+                api={api}
+                setDeleteConfirmation={setIsDeleting}
+                setTrigger={setTrigger}
+              />
+            )}
+          </div>
+        ) : (
+          <div className=" text-[26px] w-full h-full flex justify-center items-center">
+            {" "}
+            No Data Available
+          </div>
+        )
+      ) : (
+        <div className="w-full h-full flex justify-center items-center">
+          Loading...
         </div>
-        {isDeleting === true && (
-        <DeleteConfirmation
-          api={api}
-          setDeleteConfirmation={setIsDeleting}
-          setTrigger={setTrigger}
-        />
       )}
-      </div>:<div className=" text-[26px] w-full h-full flex justify-center items-center"> No Data Available</div>: <div className="w-full h-full flex justify-center items-center">
-        Loading...</div>}
     </Studio>
   );
 };

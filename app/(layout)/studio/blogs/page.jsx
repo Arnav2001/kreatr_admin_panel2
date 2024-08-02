@@ -84,8 +84,8 @@ const Blogs = () => {
                     </div>
                   </div>
                   <div className="bg-white bg-opacity-[50%] p-4">
-                    <h1>{val.title}</h1>
-                    <p> Date:- {val.date}</p>
+                    <h1 className="font-bold text-xl">{val.title}</h1>
+                    <p className="flex items-center gap-2"><img src="/assets/calender.png" alt="calnederimg" className="w-[5%] h-[5%]"/>{val.date}</p>
                     <div className="w-full flex justify-end">
                       <Link key={index} href={`${path}/${val.id}`}>
                         <div className="w-full flex justify-end items-end">

@@ -1,8 +1,28 @@
+'use client'
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const StudioDrawer = ({ drawerItems,selectedIndex }) => {
 
+  const [permission,setPermissions] = useState([]);
+
+  useEffect(() => {
+    const getContactusDetail = async () => {
+      try {
+        const response = await fetch(
+          "https://u6ul0pgf3i.execute-api.ap-south-1.amazonaws.com/dev/admin_permission/"
+        );
+        const data = await response.json();
+        console.log('yoooooooo',data);
+        setPermissions(data);
+        // setIsLoading(false);
+      } catch (error) {
+        alert(error);
+      }
+    };
+    getContactusDetail();
+  }, []);
 
   return (
     <div className=" h-full w-full flex flex-col items-center justify-between bg-dark">

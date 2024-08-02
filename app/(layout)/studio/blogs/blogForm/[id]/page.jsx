@@ -243,7 +243,7 @@ export default function BlogForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full bg-dark w-full text-light">
+    <div className="flex flex-col items-center justify-center min-h-full p-4 bg-dark w-full text-light">
       <div className="w-[60%]">
         {!isPreviewing ? ( // Render editing form if not previewing
           <>
@@ -307,7 +307,7 @@ export default function BlogForm() {
                 onClick={() => addElement("images")}
                 className="btn border border-light ml-4 pl-2 pr-2 mr-4 flex justify-center items-center"
               >
-                Images
+                ImageUrl
               </button>
               <div className=" flex items-center">
                 <input
@@ -323,7 +323,7 @@ export default function BlogForm() {
                   key={index}
                   className="form-section mb-4 flex items-center"
                 >
-                  <label className="mr-2">{section.tagType.toUpperCase()}:</label>
+                  <label className="mr-2">{section.tagType.toUpperCase() === 'IMAGES'?"IMAGE URL":section.tagType.toUpperCase()}:</label>
                   {section.tagType === "p" ? (
                     <textarea
                       value={section.value}

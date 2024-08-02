@@ -23,7 +23,7 @@ const WorksForm = () => {
   const [workSuggestion, setWorkSuggestion] = useState({});
   const [imageUrl, setImageurl] = useState("");
   const [isSuggestions, setIsSuggestions] = useState(false);
-  const [selectedTag,setSelectedTag]=useState([])
+  const [selectedTag, setSelectedTag] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -43,10 +43,10 @@ const WorksForm = () => {
         setSelectedTag(resData.data.tags);
         setImages(resData.data.images);
         // setSections(resData.data.blogsDetails)
-        const ids = resData.data.suggestions.map(suggestion => suggestion.id);
+        const ids = resData.data.suggestions.map((suggestion) => suggestion.id);
 
-  // Update the state with the array of IDs
-  setSelectedSuggestions(ids);
+        // Update the state with the array of IDs
+        setSelectedSuggestions(ids);
 
         console.log(id);
         // console.log(resData.resData);
@@ -60,10 +60,10 @@ const WorksForm = () => {
   const handleTagClick = (val) => {
     setSelectedTag((prevSelected) => {
       if (!Array.isArray(prevSelected)) {
-        console.error('selectedSuggestions is not an array');
+        console.error("selectedSuggestions is not an array");
         return [];
       }
-  
+
       if (prevSelected.includes(val)) {
         // Remove the ID
         return prevSelected.filter((suggestionId) => suggestionId !== val);
@@ -73,7 +73,7 @@ const WorksForm = () => {
       }
     });
   };
-  
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     console.log(file);
@@ -131,8 +131,6 @@ const WorksForm = () => {
     setImageurl("");
   };
 
-
-
   const handleTagSubmit = async () => {
     try {
       await fetch(
@@ -164,21 +162,18 @@ const WorksForm = () => {
       websiteLink,
       copyRightText,
     };
-    console.log(formData)
+    console.log(formData);
     try {
-      
-      const api = id === 'id' ? 
-      "https://86avf8i3h6.execute-api.ap-south-1.amazonaws.com/dev/studioWorks/":
-      `https://86avf8i3h6.execute-api.ap-south-1.amazonaws.com/dev/studioWorks/${id}`;
+      const api =
+        id === "id"
+          ? "https://86avf8i3h6.execute-api.ap-south-1.amazonaws.com/dev/studioWorks/"
+          : `https://86avf8i3h6.execute-api.ap-south-1.amazonaws.com/dev/studioWorks/${id}`;
 
-      await fetch(
-        api,
-        {
-          method: id === 'id' ? "POST": "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      await fetch(api, {
+        method: id === "id" ? "POST" : "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
       alert("Form submitted successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -186,140 +181,151 @@ const WorksForm = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col gap-4 w-full h-full relative overflow-auto">
-      <div className="flex gap-2">
-        <label>Title:</label>
-        <input
-          className="border border-dark"
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
-      <div className="flex gap-2">
-        <label>Cover Image:</label>
-        <input
-          className="border border-dark"
-          type="text"
-          value={coverImg}
-          onChange={(e) => setCoverImg(e.target.value)}
-        />
-      </div>
+    <div className="pl-10 pr-10 pt-10 flex justify-center w-full h-full relative overflow-auto">
+      <div className="flex flex-col  w-[60%] h-full p-4 overflow-auto border-2 border-gray-400 rounded-md scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded gap-1">
+        <div className="flex gap-2 justify-center flex-col p-2">
+          <label className="font-bold text-2xl">Title</label>
+          <input
+            className="border-none rounded-md bg-slate-200 p-1 "
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-2 justify-center flex-col p-2">
+          <label className="font-bold text-2xl">Cover Image</label>
+          <input
+            className="border-none rounded-md bg-slate-200 p-1"
+            type="text"
+            value={coverImg}
+            onChange={(e) => setCoverImg(e.target.value)}
+          />
+        </div>
 
-      <div>
-        <button
-          className="border p-2 border-dark"
-          onClick={() => {
-            setIsSuggestions(true);
-          }}
-        >
-          Suggestions
-        </button>
-      </div>
-      <div className="flex gap-2">
-        <label>Tags:</label>
-        <div className="flex flex-col gap-4">
+        <div className="w-full h-[8%] p-1 flex justify-end">
+          <button
+            className="border p-2 border-dark rounded-md bg-white text-black hover:bg-black hover:text-white"
+            onClick={() => {
+              setIsSuggestions(true);
+            }}
+          >
+            Suggestions
+          </button>
+        </div>
+        <div className="flex gap-4 p-2">
+          <label className="font-bold text-2xl">Tags</label>
+          <div className="flex gap-2">
+            <input
+               className="border-none rounded-md bg-slate-200 p-1"
+              type="text"
+              value={newTag}
+              onChange={(e) => setNewTag(e.target.value)}
+            />
+
+            <button type="button" onClick={handleTagSubmit} className="border border-black rounded-lg p-1">
+              Add Tag
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-col gap-4 grid grid-cols-3 ml-20 mt-2 w-[80%] min-h-[30%] overflow-auto scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded">
           {tags.map((val, index) => (
-            <div  className="border p-2 cursor-pointer" style={{backgroundColor: selectedTag.includes(val.tag)?'green':null}} onClick={()=>{handleTagClick(val.tag)}} key={index}>
+            <div
+              className="border p-2 rounded-md cursor-pointer"
+              style={{
+                backgroundColor: selectedTag.includes(val.tag) ? "green" : null,
+              }}
+              onClick={() => {
+                handleTagClick(val.tag);
+              }}
+              key={index}
+            >
               {val.tag}
             </div>
           ))}
         </div>
-        <div>
-        <input
-          className="border border-dark"
-          type="text"
-          value={newTag}
-          onChange={(e) => setNewTag(e.target.value)}
-        />
-
-        <button type="button" onClick={handleTagSubmit}>
-          Add Tag
-        </button>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <label>Industry:</label>
-        <input
-          className="border border-dark"
-          type="text"
-          value={industry}
-          onChange={(e) => setIndustry(e.target.value)}
-        />
-      </div>
-      <div className="flex gap-2">
-        <label>Location:</label>
-        <input
-          className="border border-dark"
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
-      </div>
-
-      <div className="flex gap-2">
-        <label>Images:</label>
-        <div className=" flex items-center">
+        <div className="flex gap-2 p-2 flex-col">
+          <label className="font-bold text-2xl">Industry</label>
           <input
-            type="file"
-            className="text-light "
-            onChange={(e) => handleImageUpload(e)}
+            className="border-none rounded-md bg-slate-200 p-1"
+            type="text"
+            value={industry}
+            onChange={(e) => setIndustry(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-2 p-2 flex-col">
+          <label className="font-bold text-2xl">Location</label>
+          <input
+            className="border-none rounded-md bg-slate-200 p-1"
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
           />
         </div>
 
-        <input
-          className="border border-dark"
-          type="text"
-          value={imageUrl}
-          onChange={(e) => {
-            setImageurl(e.target.value);
-          }}
-        />
-        <button type="button" onClick={handleAddImage}>
-          + Add Image
-        </button>
-      </div>
-      {images.map((image, index) => (
-        <div className="relative w-[10vh] h-[50vh]" key={index}>
-          <img src={image} alt="image" />
+        <div className="flex gap-2">
+          <label className="font-bold text-2xl">Images</label>
+          <div className="flex items-center">
+            <input
+              type="file"
+              className="border-none rounded-md bg-slate-200 p-1"
+              onChange={(e) => handleImageUpload(e)}
+            />
+          </div>
+
+          <input
+            className="border border-dark rounded-lg"
+            type="text"
+            value={imageUrl}
+            onChange={(e) => {
+              setImageurl(e.target.value);
+            }}
+          />
+          <button type="button" onClick={handleAddImage} className="font-bold">
+            + Add Image
+          </button>
         </div>
-      ))}
-      <div className="flex gap-2">
-        <label>Website Link:</label>
-        <input
-          className="border border-dark"
-          type="text"
-          value={websiteLink}
-          onChange={(e) => setWebsiteLink(e.target.value)}
-        />
+        {images.map((image, index) => (
+          <div className="relative w-[10vh] h-[50vh]" key={index}>
+            <img src={image} alt="image" />
+          </div>
+        ))}
+        <div className="flex gap-2 flex-col">
+          <label className="font-bold text-2xl">Website Link</label>
+          <input
+            className="border-none rounded-md bg-slate-200 p-1"
+            type="text"
+            value={websiteLink}
+            onChange={(e) => setWebsiteLink(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-2 flex-col">
+          <label className="font-bold text-2xl">Copyright Text</label>
+          <input
+            className="border-none rounded-md bg-slate-200 p-1"
+            type="text"
+            value={copyRightText}
+            onChange={(e) => setCopyRightText(e.target.value)}
+          />
+        </div>
+        <div className="mt-2 flex justify-end">
+          <button
+            onClick={handleSubmit}
+            className="bg-dark text-light pl-4 pr-4 pt-2 pb-2 rounded-xl"
+          >
+            Submit
+          </button>
+        </div>
+        {isSuggestions === true && (
+          <SuggestionsPage
+            api={
+              "https://86avf8i3h6.execute-api.ap-south-1.amazonaws.com/dev/studioWorks?offset="
+            }
+            selectedSuggestions={selectedSuggestions}
+            setIsSuggestions={setIsSuggestions}
+            setSelectedSuggestions={setSelectedSuggestions}
+          />
+        )}
       </div>
-      <div className="flex gap-2">
-        <label>Copyright Text:</label>
-        <input
-          className="border border-dark"
-          type="text"
-          value={copyRightText}
-          onChange={(e) => setCopyRightText(e.target.value)}
-        />
-      </div>
-      <div>
-        <button
-          onClick={handleSubmit}
-          className="bg-dark text-light pl-4 pr-4 pt-2 pb-2 rounded-xl"
-        >
-          Submit
-        </button>
-      </div>
-      {isSuggestions === true && (
-        <SuggestionsPage
-          api={
-            "https://86avf8i3h6.execute-api.ap-south-1.amazonaws.com/dev/studioWorks?offset="
-          }
-          selectedSuggestions={selectedSuggestions}
-          setIsSuggestions={setIsSuggestions}
-          setSelectedSuggestions={setSelectedSuggestions}
-        />
-      )}
     </div>
   );
 };

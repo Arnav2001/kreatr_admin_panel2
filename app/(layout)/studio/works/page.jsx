@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import Studio from "../page";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes, faArrowRight, faEdit, } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTimes,
+  faArrowRight,
+  faEdit,
+} from "@fortawesome/free-solid-svg-icons";
 import { DeleteConfirmation } from "../../../components/deleteButton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -75,7 +79,7 @@ const Works = () => {
                   className="border bg-cover bg-center flex flex-col justify-between border-dark w-full h-[50vh]"
                   style={{ backgroundImage: `url(${val.coverImg})` }}
                 >
-                  <div className="w-full  pt-4 pr-4 flex justify-end gap-2">
+                  <div className="w-full  pt-4 pr-4 flex justify-end gap-2 items-center">
                     <div
                       className="w-[2.5vw] h-[2.5vw] relative cursor-pointer"
                       onClick={() => {
@@ -120,16 +124,31 @@ const Works = () => {
                       />
                     </div>
                   </div>
-                  <div className=" bg-light bg-opacity-[80%] p-4">
-                    <h1>{val.title}</h1>
-                    <p> Location:- {val.location}</p>
+                  <div className=" bg-light bg-opacity-[80%] p-2">
+                    <h1 className="font-bold p-1">{val.title}</h1>
+                    <p className="flex gap-2 items-center p-1 w-[100%]">
+                      <img
+                        src="/assets/location.png"
+                        alt="locationimg"
+                        className="w-[5%] h-[5%]"
+                      />
+                      <div className="w-[95%] h-full">{val.location}</div>
+                      
+                    </p>
                     <div className="flex justify-between">
-                    <p> Industry:- {val.industry}</p>
-                    <Link key={index} href={`${currentPath}/${val.id}`}>
-                    <div className="w-full flex justify-end items-end">
-                      <FontAwesomeIcon icon={faArrowRight} className="" />
-                    </div>
-                  </Link>
+                      <p className="flex gap-2 items-center p-1 w-[100%]">
+                        <img
+                          src="/assets/industry.png"
+                          alt="industryimg"
+                          className="w-[5%]"
+                        />
+                        <div className="w-[90%] h-[100%]">{val.industry}</div>
+                        </p>
+                      <Link key={index} href={`${currentPath}/${val.id}`} className="flex items-center">
+                        <div className="w-full flex justify-end items-end">
+                          <FontAwesomeIcon icon={faArrowRight}/>
+                        </div>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -153,8 +172,8 @@ const Works = () => {
                   </div>
                 )
               )}
-               <div className="w-[3vw] cursor-pointer h-[3vw] bg-dark text-light text-[24px] rounded-[50%] absolute right-0 mr-4 flex justify-center items-center p-2">
-               <Link href={`${currentPath}/worksForm/id`}> + </Link>
+              <div className="w-[3vw] cursor-pointer h-[3vw] bg-dark text-light text-[24px] rounded-[50%] absolute right-0 mr-4 flex justify-center items-center p-2">
+                <Link href={`${currentPath}/worksForm/id`}> + </Link>
               </div>
             </div>
           </div>

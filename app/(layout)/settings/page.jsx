@@ -23,6 +23,9 @@ const CommunitySettings = () => {
     collaboration_request: false,
     contactUs: false,
     ReportABug: false,
+    studioBlogs:false,
+    studioContactUs:false,
+    studioWorks:false
   });
 
   useEffect(() => {
@@ -159,6 +162,35 @@ const CommunitySettings = () => {
                     />
                     Report A Bug
                   </label>
+                  Studio
+                  <label className="block mb-2 pt-2 w-fit ">
+                    <input
+                      type="checkbox"
+                      value="Option 1"
+                      checked={val.permission["studioBlogs"]}
+                      className="mr-2"
+                    />
+                    Blogs
+                  </label>
+                  <label className="block mb-2 w-fit ">
+                    <input
+                      type="checkbox"
+                      value="Option 1"
+                      checked={val.permission["studioContactUs"]}
+                      className="mr-2"
+                    />
+                    Contact Us
+                  </label>
+                  <label className="block mb-2 w-fit ">
+                    <input
+                      type="checkbox"
+                      value="Option 1"
+                      checked={val.permission["studioWorks"]}
+                      className="mr-2"
+                    />
+                    Works
+                  </label>
+
                 </div>
               ))
             )}
