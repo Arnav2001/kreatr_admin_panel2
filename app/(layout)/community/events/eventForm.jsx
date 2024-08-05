@@ -39,6 +39,9 @@ const EventForm = ({
     const file = e.target.files[0];
     console.log(file);
     if (!file) return;
+    const fileType = file.type;
+    console.log("File Type:", fileType);
+
     const formData = new FormData();
     formData.append("file", file);
     const reader = new FileReader();
@@ -49,6 +52,7 @@ const EventForm = ({
 
       const body = {
         buffer: `data:image/png;base64,${base64String}`,
+        fileType
       };
       console.log(body);
       try {

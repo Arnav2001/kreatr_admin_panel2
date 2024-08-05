@@ -2,9 +2,11 @@
 import { useEffect, useState } from "react";
 import Studio from "../page";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes,faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 import { DeleteConfirmation } from "../../../components/deleteButton";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const ContactUs = () => {
   const [loading, setLoading] = useState(true);
@@ -13,7 +15,7 @@ const ContactUs = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [api, setApi] = useState("");
   const [trigger, setTrigger] = useState("");
-
+  const path = usePathname();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -62,6 +64,13 @@ const ContactUs = () => {
                   <h1 className="font-bold p-1">{val.name}</h1>
                   <h2 className="p-1 flex gap-2 items-center"><img src="/assets/mail.png" alt="mailimg" className="w-[5%] h-[5%]" />{val.senderEmail}</h2>
                   <p className="p-1 flex gap-2 items-center"><img src="/assets/phone.png" alt="phonenumber" className="w-[5%] h-[5%]" />{val.phoneNumber}</p>
+                  <div className="w-full flex justify-end pr-4 pb-4">
+                      <Link key={index} href={`${path}/${val.id}`}>
+                        <div className="w-full flex justify-end items-end">
+                          <FontAwesomeIcon icon={faArrowRight} className="" />
+                        </div>
+                      </Link>
+                    </div>
                 </div>
               ))}
             </div>

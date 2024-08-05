@@ -6,11 +6,11 @@ import { usePathname } from 'next/navigation';
 
 const Studio = ({ children }) => {
   const drawerItems = [
-    { title: "Blogs", path: "/studio/blogs" },
-    { title: "Careers", path: "/studio/careers" },
-    { title: "Contact Us", path: "/studio/contactUs" },
-    { title: "Works", path: "/studio/works" },
-  ];
+    { title: "Blogs", path: "/studio/blogs",key:"studioBlogs" },
+    { title: "Careers", path: "/studio/careers",key:'careers' },
+    { title: "Contact Us", path: "/studio/contactUs",key:"studioContactUs"},
+    { title: "Works", path: "/studio/works", key:"studioWorks" },
+  ]; 
   const pathname = usePathname()
   const [selectedIndex,setSelectedIndex]= useState(-1);
   useEffect(() => {
@@ -24,7 +24,9 @@ const Studio = ({ children }) => {
         <StudioDrawer drawerItems={drawerItems} selectedIndex={selectedIndex}/>
       </div>
       <div className='h-full' style={{ width: '80%',}}>
-        {children}
+        {children === undefined ?<div className='w-full h-full flex justify-center items-center'>
+          Welcome To Studio Panel
+        </div>:children}
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ const SuggestionsPage = ({api,selectedSuggestions,setIsSuggestions,setSelectedSu
   const [selectedSugSuggestions,setSelectedSubSuggestions]=useState(selectedSuggestions);
 
   const handleSuggestionClick = (id) => {
-    setSelectedSuggestions((prevSelected) => {
+    setSelectedSubSuggestions((prevSelected) => {
       if (!Array.isArray(prevSelected)) {
         console.error('selectedSuggestions is not an array');
         return [];
@@ -54,7 +54,7 @@ const SuggestionsPage = ({api,selectedSuggestions,setIsSuggestions,setSelectedSu
                 <div className=' bg-light w-full bg-opacity-[60%] p-4'>
                 {val.title}</div>
                 </div>
-              <div className=' absolute top-0 w-full h-full z[1] cursor-pointer' onClick={()=>{handleSuggestionClick(val.id)}} style={{backgroundColor: selectedSuggestions.includes(val.id)? 'rgba(74, 222, 128, 0.5)':null,}}/>
+              <div className=' absolute top-0 w-full h-full z[1] cursor-pointer' onClick={()=>{handleSuggestionClick(val.id)}} style={{backgroundColor: selectedSugSuggestions.includes(val.id)? 'rgba(74, 222, 128, 0.5)':null,}}/>
 
             </div>
           ))
@@ -86,7 +86,7 @@ const SuggestionsPage = ({api,selectedSuggestions,setIsSuggestions,setSelectedSu
       </div>
       <div className='flex gap-2'>
         <div className='border rounded-lg pl-3 pr-3 pt-1 pb-1 cursor-pointer flex justify-center items-center bg-light text-dark' onClick={()=>{setIsSuggestions(false)}}>Cancel</div>
-        <div className='border rounded-lg pl-3 pr-3 pt-1 pb-1 cursor-pointer flex justify-center items-center text-light hover:bg-light hover:text-dark' onClick={()=>{setIsSuggestions(false)}}>Submit</div>
+        <div className='border rounded-lg pl-3 pr-3 pt-1 pb-1 cursor-pointer flex justify-center items-center text-light hover:bg-light hover:text-dark' onClick={()=>{setSelectedSuggestions([...selectedSugSuggestions]); setIsSuggestions(false)}}>Submit</div>
       </div>
       </div>
     </div>

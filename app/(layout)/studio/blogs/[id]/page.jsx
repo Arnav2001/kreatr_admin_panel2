@@ -19,7 +19,7 @@ const BlogDetail = () => {
   }, []);
   return (
     <div className="bg-light p-4 w-full min-h-full flex justify-center items-center">
-      <div className=" w-[40%]">
+      <div className="h-full w-[40%]">
         <div className="firstImage">
           <img src={data.coverImg} alt="coverImg" />
         </div>
@@ -41,6 +41,18 @@ const BlogDetail = () => {
                 <img key={index} className={`${val.class}`} src={val.value} alt="imggg" />
               )
             )}
+            <div className="font-bold h-full">
+              Suggestions
+              <div className="flex flex-col gap-4 h-full pt-4">
+              {data.suggestions!== undefined && data.suggestions.map((val,index)=>(
+                <div className="bg-center bg-cover bg-no-repeat w-full h-[40vh] flex items-end" style={{backgroundImage:`url(${val.coverImg})`}}>
+                  <div className="bg-light bg-opacity-[50%] p-4">
+                    {val.title}
+                  </div>
+                </div>
+              ))}
+              </div>
+            </div>
         </div>
       </div>
     </div>

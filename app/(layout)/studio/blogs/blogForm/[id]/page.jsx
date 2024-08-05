@@ -4,6 +4,7 @@ import SuggestionsPage from "@/app/components/suggestionsPage";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import {formatDate} from "../../../../../components/formateDate";
 
 export default function BlogForm() {
   const { id } = useParams();
@@ -11,7 +12,7 @@ export default function BlogForm() {
   const [sections, setSections] = useState([]);
   const [isPreviewing, setIsPreviewing] = useState(false); // State for managing preview mode
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(formatDate(new Date()));
   const [coverImg, setCoverImg] = useState("");
   const [featured, setFeatured] = useState(false);
   const [selectedSuggestions, setSelectedSuggestions] = useState([]);
@@ -51,6 +52,10 @@ export default function BlogForm() {
     const file = e.target.files[0];
     console.log(file);
     if (!file) return;
+
+    const fileType = file.type;
+    console.log("File Type:", fileType);
+    
     const formData = new FormData();
     formData.append("file", file);
     const reader = new FileReader();
@@ -61,6 +66,7 @@ export default function BlogForm() {
 
       const body = {
         buffer: `data:image/png;base64,${base64String}`,
+        fileType
       };
       console.log(body);
       try {

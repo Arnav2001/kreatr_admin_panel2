@@ -41,6 +41,10 @@ export default function BlogForm() {
     const file = e.target.files[0];
     console.log(file);
     if (!file) return;
+
+    const fileType = file.type;
+    console.log("File Type:", fileType);
+    
     const formData = new FormData();
     formData.append("file", file);
     const reader = new FileReader();
@@ -51,6 +55,7 @@ export default function BlogForm() {
 
       const body = {
         buffer: `data:image/png;base64,${base64String}`,
+        fileType
       };
       console.log(body);
       try {
@@ -65,12 +70,7 @@ export default function BlogForm() {
         );
         console.log(response.data.fileUrl);
         alert(response.data.fileUrl);
-        if (setImageUrl === setImages) {
-          setImages([...images, response.data.fileUrl]);
-          console.log(images);
-        } else {
-          setImageUrl(response.data.fileUrl);
-        }
+
       } catch (error) {
         console.error("Image upload failed", error);
       }
