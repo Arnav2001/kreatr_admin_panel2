@@ -2,13 +2,22 @@
 
 import SuggestionsPage from "@/app/components/suggestionsPage";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import {formatDate} from "../../../../../components/formateDate";
+import { formatDate } from "../../../../../components/formateDate";
+import {
+  getArrayFromLocalStorage,
+  saveArrayToLocalStorage,
+} from "@/app/services/localStoage";
+import { v4 as uuidv4 } from "uuid";
 
 export default function BlogForm() {
-  const { id } = useParams();
+
   const router = useRouter();
+  const {id} = useParams();
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type")
+const [start,SetStart] = useState(false);
   const [sections, setSections] = useState([]);
   const [isPreviewing, setIsPreviewing] = useState(false); // State for managing preview mode
   const [title, setTitle] = useState("");
@@ -16,10 +25,31 @@ export default function BlogForm() {
   const [coverImg, setCoverImg] = useState("");
   const [featured, setFeatured] = useState(false);
   const [selectedSuggestions, setSelectedSuggestions] = useState([]);
+  const [isSuggestions, setIsSuggestions] = useState(false);
+  const [uniqueId,setUniqueId] = useState('');
 
-  const [isSuggestions,setIsSuggestions]=useState(false);
+useEffect(() => {
+  console.log(type);
+  const fetchData = ()=>{
+    const localData = getArrayFromLocalStorage('draft');
+    const obj = localData.find(item => item.id === id);
+    console.log(obj);
+    setTitle(obj.title);
+        setCoverImg(obj.coverImg);
+        setDate(obj.date);
+        setSections(obj.blogsDetails);
+        const res = obj.suggestions[0]=== null? obj.suggestions: obj.suggestions.map((val) => val.id);
+        setSelectedSuggestions(res);
+        setFeatured(obj.featured);
+  }
+  
+  type === "draft" && fetchData();
+}, [])
 
   useEffect(() => {
+    const uid = uuidv4();
+    console.log(uid);
+    setUniqueId(uid);
     const getData = async () => {
       try {
         const response = await fetch(
@@ -31,12 +61,12 @@ export default function BlogForm() {
         setTitle(resData.data.title);
         setCoverImg(resData.data.coverImg);
         setDate(resData.data.date);
-        setSections(resData.data.blogsDetails)
-        const res = (resData.data.suggestions).map((val)=> val.id);
+        setSections(resData.data.blogsDetails);
+        const res = resData.data.suggestions.map((val) => val.id);
         setSelectedSuggestions(res);
-        console.log('yyoyoyooyoyoyoyoy',res);
+        console.log("yyoyoyooyoyoyoyoy", res);
         setFeatured(resData.data.featured);
-        
+
         console.log(id);
         console.log(resData.resData);
       } catch (error) {
@@ -44,10 +74,9 @@ export default function BlogForm() {
       }
     };
 
-    id !== "id" && getData();
+    id !== "id" && type === "listing" && getData();
   }, [id]);
-  
-  
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     console.log(file);
@@ -55,7 +84,7 @@ export default function BlogForm() {
 
     const fileType = file.type;
     console.log("File Type:", fileType);
-    
+
     const formData = new FormData();
     formData.append("file", file);
     const reader = new FileReader();
@@ -66,7 +95,7 @@ export default function BlogForm() {
 
       const body = {
         buffer: `data:image/png;base64,${base64String}`,
-        fileType
+        fileType,
       };
       console.log(body);
       try {
@@ -81,12 +110,12 @@ export default function BlogForm() {
         );
         console.log(response.data.fileUrl);
         alert(response.data.fileUrl);
-
       } catch (error) {
         console.error("Image upload failed", error);
       }
     };
   };
+
   const addElement = (tagType) => {
     setSections([...sections, { tagType, value: "" }]);
   };
@@ -99,8 +128,6 @@ export default function BlogForm() {
       updatePreview(newSections);
     }
   };
-
-
 
   const removeSection = (index) => {
     const newSections = sections.filter((_, i) => i !== index);
@@ -166,7 +193,6 @@ export default function BlogForm() {
     setIsPreviewing(true); // Set preview mode to true
   };
 
-
   const publish = async () => {
     const publishData = sections.map((section) => ({
       tagType: section.tagType,
@@ -178,54 +204,104 @@ export default function BlogForm() {
       title,
       date,
       coverImg,
-      suggestions:selectedSuggestions,
-      featured:featured,
+      suggestions: selectedSuggestions,
+      featured: featured,
       blogsDetails: publishData,
     };
-    const userConfirmed = title === ""? true:window.confirm('Are you sure you want to make changes?');
+    const userConfirmed =
+      title === ""
+        ? true
+        : window.confirm("Are you sure you want to make changes?");
     if (userConfirmed) {
       console.log("Publish Body:", body);
 
-    const api =
-      id === "id"
-        ? "https://7nfhxqula3.execute-api.ap-south-1.amazonaws.com/dev/studioBlogs"
-        : `https://7nfhxqula3.execute-api.ap-south-1.amazonaws.com/dev/studioBlogs/${id}`;
+      const api =
+        id === "id"
+          ? "https://7nfhxqula3.execute-api.ap-south-1.amazonaws.com/dev/studioBlogs"
+          : `https://7nfhxqula3.execute-api.ap-south-1.amazonaws.com/dev/studioBlogs/${id}`;
 
-    try {
-      const response = await fetch(api, {
-        method: id === "id" ? "POST" : "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+      try {
+        const response = await fetch(api, {
+          method: id === "id" ? "POST" : "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong");
+        if (!response.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+
+        console.log("Response Data:", data);
+        alert("Blog published successfully");
+        router.back();
+        // Clear the form after publishing
+        setSections([]);
+        setTitle("");
+        setDate("");
+        setCoverImg("");
+        setIsPreviewing(false);
+      } catch (error) {
+        console.error("Publish failed", error);
+        alert(`Error: ${error.message}`);
       }
-
-      console.log("Response Data:", data);
-       alert("Blog published successfully");
-       router.back();
-      // Clear the form after publishing
-      setSections([]);
-      setTitle("");
-      setDate("");
-      setCoverImg("");
-      setIsPreviewing(false);
-    } catch (error) {
-      console.error("Publish failed", error);
-      alert(`Error: ${error.message}`);
-    }
-      console.log('yes');
+      console.log("yes");
     } else {
-      console.log('cancel');
+      console.log("cancel");
     }
-    
   };
 
+  useEffect(() => {
+    const handleSaveData = () => {
+      // Retrieve stored data from local storage
+      const storedData = getArrayFromLocalStorage("draft") || [];
+  
+      // Create a new object with the updated data
+      const newObject = {
+        id: uniqueId,
+        title,
+        date,
+        coverImg,
+        suggestions: selectedSuggestions,
+        featured: featured,
+        blogsDetails: sections,
+      };
+  
+      // Check if the object already exists in the array
+      const index = storedData.findIndex(item => item.id === uniqueId);
+  
+      if (index !== -1) {
+        // Replace the existing object
+        storedData[index] = newObject;
+      } else {
+        // Add the new object if it doesn't exist
+        storedData.push(newObject);
+      }
+      console.log(storedData);
+      // Save the updated array to local storage
+      if(type === 'draft'){
+        console.log('yeeeeeee')
+        const updatedData = storedData.filter(item => item.id !== id);
+        console.log(updatedData);
+        saveArrayToLocalStorage("draft", updatedData);
+
+      }else{
+      saveArrayToLocalStorage("draft", storedData);}
+    };
+  
+   if( title!=="" ||
+    coverImg!==""||
+    selectedSuggestions.length!==0||
+    sections.length!==0 ){
+      
+      start && handleSaveData();}
+      SetStart(true);
+
+  }, [title, date, coverImg, selectedSuggestions, featured, sections]);
+  
   const getClassForType = (type) => {
     switch (type) {
       case "title":
@@ -272,7 +348,7 @@ export default function BlogForm() {
                   setDate(e.target.value);
                 }}
               />
-             
+
               <input
                 type="text"
                 className="text-dark p-2 placeholder:text-dark placeholder:text-opacity-[50%]"
@@ -282,14 +358,17 @@ export default function BlogForm() {
                   setCoverImg(e.target.value);
                 }}
               />
-               <button
-                onClick={() => {setIsSuggestions(true)}}
+              <button
+                onClick={() => {
+                  setIsSuggestions(true);
+                }}
                 className="btn border border-light ml-4 pl-2 pr-2 flex justify-center items-center"
-              > Suggestions </button>
+              >
+                {" "}
+                Suggestions{" "}
+              </button>
             </div>
             <div className="mb-4 flex">
-              
-             
               <button
                 onClick={() => addElement("h1")}
                 className="btn border border-light ml-4 pl-2 pr-2 flex justify-center items-center"
@@ -308,7 +387,7 @@ export default function BlogForm() {
               >
                 P
               </button>
-              
+
               <button
                 onClick={() => addElement("images")}
                 className="btn border border-light ml-4 pl-2 pr-2 mr-4 flex justify-center items-center"
@@ -329,7 +408,12 @@ export default function BlogForm() {
                   key={index}
                   className="form-section mb-4 flex items-center"
                 >
-                  <label className="mr-2">{section.tagType.toUpperCase() === 'IMAGES'?"IMAGE URL":section.tagType.toUpperCase()}:</label>
+                  <label className="mr-2">
+                    {section.tagType.toUpperCase() === "IMAGES"
+                      ? "IMAGE URL"
+                      : section.tagType.toUpperCase()}
+                    :
+                  </label>
                   {section.tagType === "p" ? (
                     <textarea
                       value={section.value}
@@ -361,16 +445,27 @@ export default function BlogForm() {
               ))}
             </div>
             <div id="buttonContainer" className="flex mt-4 gap-4">
-              <button onClick={()=>{router.back()}} className="btn border pl-4 pr-4 rounded-md">
+              <button
+                onClick={() => {
+                  router.back();
+                }}
+                className="btn border pl-4 pr-4 rounded-md"
+              >
                 Cancel
               </button>
-              <button onClick={previewContent} className="btn border pl-4 pr-4 rounded-md">
+              <button
+                onClick={previewContent}
+                className="btn border pl-4 pr-4 rounded-md"
+              >
                 Preview
               </button>
               {/* <button onClick={publishLater} className="btn ml-2">
                 Publish Later
               </button> */}
-              <button onClick={publish} className="btn ml-2 border pl-4 pr-4 rounded-md">
+              <button
+                onClick={publish}
+                className="btn ml-2 border pl-4 pr-4 rounded-md"
+              >
                 Publish
               </button>
             </div>
@@ -378,7 +473,10 @@ export default function BlogForm() {
         ) : (
           // Render preview if previewing
           <>
-            <button onClick={handleBack} className="btn border border-light p-2 mb-4">
+            <button
+              onClick={handleBack}
+              className="btn border border-light p-2 mb-4"
+            >
               Back
             </button>
             <div id="previewContainer" className="blogContainer mt-8">
@@ -438,7 +536,16 @@ export default function BlogForm() {
           </>
         )}
       </div>
-      {isSuggestions === true && <SuggestionsPage api={'https://7nfhxqula3.execute-api.ap-south-1.amazonaws.com/dev/studioBlogs?offset='} selectedSuggestions={selectedSuggestions} setIsSuggestions={setIsSuggestions} setSelectedSuggestions={setSelectedSuggestions}/>}
+      {isSuggestions === true && (
+        <SuggestionsPage
+          api={
+            "https://7nfhxqula3.execute-api.ap-south-1.amazonaws.com/dev/studioBlogs?offset="
+          }
+          selectedSuggestions={selectedSuggestions}
+          setIsSuggestions={setIsSuggestions}
+          setSelectedSuggestions={setSelectedSuggestions}
+        />
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { DeleteConfirmation } from "../../../components/deleteButton";
 import Link from "next/link";
+import { getArrayFromLocalStorage } from "@/app/services/localStoage";
 
 const Blogs = () => {
   const [loading, setLoading] = useState(true);
@@ -60,7 +61,7 @@ const Blogs = () => {
                   <div className="w-full h-[2.5vw] mt-4 pr-2 flex justify-end gap-2">
                     
                     <Link
-                      href={`${path}/blogForm/${val.id}`}
+                      href={`${path}/blogForm/${val.id}?type=listing`}
                       className="w-[2.5vw] h-full flex items-center justify-center cursor-pointer bg-white bg-opacity-[50%] p-2 rounded-[50%] "
                     >
                       <FontAwesomeIcon
@@ -115,13 +116,21 @@ const Blogs = () => {
                   </div>
                 )
               )}
+              <div className="absolute right-0 flex cursor-pointer gap-4">
+              {(getArrayFromLocalStorage('draft') || []).length!==0 && <div onClick={()=>{ router.push('/drafts')}} className="flex justify-center items-center bg-dark text-light rounded-md pl-4 pr-4">
+                Draft
+              </div>}
+
               <div
-                className="w-[3vw] h-[3vw] bg-dark text-light text-[24px] rounded-[50%] absolute right-0 mr-4 flex justify-center cursor-pointer items-center p-2"
+                className="w-[3vw] h-[3vw] bg-dark text-light text-[24px] rounded-[50%]  mr-4 flex justify-center cursor-pointer items-center p-2"
                 onClick={() => {
-                  router.push(`${path}/blogForm/id`);
+                  router.push(`${path}/blogForm/id?type=listing`);
                 }}
               >
                 +
+              </div>
+
+              
               </div>
             </div>
           </div>

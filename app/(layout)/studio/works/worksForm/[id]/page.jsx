@@ -2,7 +2,6 @@
 
 import SuggestionsPage from "@/app/components/suggestionsPage";
 import axios from "axios";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -17,14 +16,12 @@ const WorksForm = () => {
   const [industry, setIndustry] = useState("");
   const [location, setLocation] = useState("");
   const [images, setImages] = useState([]);
-  const [newImage, setNewImage] = useState("");
   const [websiteLink, setWebsiteLink] = useState("");
   const [copyRightText, setCopyRightText] = useState("");
-  const [workSuggestion, setWorkSuggestion] = useState({});
   const [imageUrl, setImageurl] = useState("");
   const [isSuggestions, setIsSuggestions] = useState(false);
   const [selectedTag, setSelectedTag] = useState([]);
-
+  const [about,setAbout] = useState('')
   useEffect(() => {
     const getData = async () => {
       try {
@@ -42,6 +39,7 @@ const WorksForm = () => {
         setWebsiteLink(resData.data.websiteLink);
         setSelectedTag(resData.data.tags);
         setImages(resData.data.images);
+        setAbout(resData.data.about);
         // setSections(resData.data.blogsDetails)
         const ids = resData.data.suggestions.map((suggestion) => suggestion.id);
 
@@ -157,6 +155,7 @@ const WorksForm = () => {
     event.preventDefault();
     const formData = {
       title,
+      about,
       coverImg,
       suggestions: selectedSuggestions,
       tags: selectedTag,
@@ -193,8 +192,19 @@ const WorksForm = () => {
           <input
             className="border-none rounded-md bg-slate-200 p-1 "
             type="text"
+            placeholder="This is our new title..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-2 justify-center flex-col p-2">
+          <label className="font-bold text-2xl">About</label>
+          <textarea
+            className="border-none rounded-md bg-slate-200 p-1 "
+            type="text"
+            placeholder="Describe company"
+            value={about}
+            onChange={(e) => setAbout(e.target.value)}
           />
         </div>
         <div className="flex gap-2 justify-center flex-col p-2">
@@ -202,6 +212,7 @@ const WorksForm = () => {
           <input
             className="border-none rounded-md bg-slate-200 p-1"
             type="text"
+            placeholder="https://example.com/_next/image?url=%2Fassets%2Fmain-img.png&w=3840&q=75"
             value={coverImg}
             onChange={(e) => setCoverImg(e.target.value)}
           />
@@ -223,6 +234,7 @@ const WorksForm = () => {
             <input
                className="border-none rounded-md bg-slate-200 p-1"
               type="text"
+              placeholder="New Tag"
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
             />
@@ -232,7 +244,7 @@ const WorksForm = () => {
             </button>
           </div>
         </div>
-        <div className="flex flex-col gap-4 grid grid-cols-3 ml-20 mt-2 w-[80%] min-h-[30%] overflow-auto scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded">
+        <div className=" gap-4 grid grid-cols-3 ml-20 mt-2 w-[80%] min-h-[30%] overflow-auto scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-100 scrollbar-thumb-rounded">
           {tags.map((val, index) => (
             <div
               className="border p-2 rounded-md cursor-pointer"
@@ -253,6 +265,7 @@ const WorksForm = () => {
           <input
             className="border-none rounded-md bg-slate-200 p-1"
             type="text"
+            placeholder="F&B"
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
           />
@@ -263,6 +276,7 @@ const WorksForm = () => {
             className="border-none rounded-md bg-slate-200 p-1"
             type="text"
             value={location}
+            placeholder="City, Country"
             onChange={(e) => setLocation(e.target.value)}
           />
         </div>
@@ -299,6 +313,7 @@ const WorksForm = () => {
           <input
             className="border-none rounded-md bg-slate-200 p-1"
             type="text"
+            placeholder="http://localhost:3000/studio/works/worksForm/id"
             value={websiteLink}
             onChange={(e) => setWebsiteLink(e.target.value)}
           />
@@ -309,6 +324,7 @@ const WorksForm = () => {
             className="border-none rounded-md bg-slate-200 p-1"
             type="text"
             value={copyRightText}
+            placeholder="This thing belongs to someone"
             onChange={(e) => setCopyRightText(e.target.value)}
           />
         </div>
